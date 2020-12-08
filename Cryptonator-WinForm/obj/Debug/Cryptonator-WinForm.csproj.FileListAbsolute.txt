@@ -1,0 +1,16 @@
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\bin\Debug\Cryptonator-WinForm.exe.config
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\bin\Debug\Cryptonator-WinForm.exe
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\bin\Debug\Cryptonator-WinForm.pdb
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.csprojAssemblyReference.cache
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator_WinForm.Form1.resources
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator_WinForm.Properties.Resources.resources
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.csproj.GenerateResource.cache
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.csproj.CoreCompileInputs.cache
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.exe
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.pdb
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator_WinForm.DeviceForm.resources
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator_WinForm.FilesForm.resources
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator_WinForm.ManualForm.resources
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\obj\Debug\Cryptonator-WinForm.csproj.CopyComplete
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\bin\Debug\InTheHand.Net.Personal.dll
+C:\Users\Adarsh Lalchan\source\repos\Cryptonator-WinForm\Cryptonator-WinForm\bin\Debug\InTheHand.Net.Personal.xml

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1300
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptonator-WinForm", "Cryptonator-WinForm\Cryptonator-WinForm.csproj", "{D2DD7D5B-8D56-4D40-B170-0FADF56193B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2DD7D5B-8D56-4D40-B170-0FADF56193B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DD7D5B-8D56-4D40-B170-0FADF56193B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DD7D5B-8D56-4D40-B170-0FADF56193B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DD7D5B-8D56-4D40-B170-0FADF56193B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2D62941-E0C7-4A7F-9E26-BB32CE5F219C}
+	EndGlobalSection
+EndGlobal
