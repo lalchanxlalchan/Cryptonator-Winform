@@ -26,6 +26,7 @@ namespace Cryptonator_WinForm
         public FileMetaData()
         {
         }
+
         #endregion
 
         #region Helpers
@@ -33,7 +34,7 @@ namespace Cryptonator_WinForm
 
         public string GetMetaDataString()
         {
-            return this.length.ToString() + "?" + this.path;
+            return this.path + "?" + this.length.ToString();
         }
 
         #endregion

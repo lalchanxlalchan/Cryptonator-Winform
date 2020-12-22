@@ -35,7 +35,7 @@ namespace Cryptonator_WinForm
 
         private void buttonManualKeyEncryption_Click(object sender, EventArgs e)
         {
-            Device.Instance.DecryptFilesWithKey(textBoxManualKey.Text);
+            Device.Instance.DecryptFilesWithKey(Encoding.UTF8.GetBytes(textBoxManualKey.Text));
         }
     }
 }

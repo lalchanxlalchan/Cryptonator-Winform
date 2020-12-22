@@ -185,16 +185,14 @@ namespace Cryptonator_WinForm
         #endregion
 
         #region selected files
-
-
+        
         private void listViewSelectedFiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             listViewSelectedFiles.Items.RemoveAt(selectedFileIndex);
             selectedFiles.RemoveAt(selectedFileIndex);
             labelSelectedFilePath.Text = selectedFiles.Count.ToString();
         }
-
-
+        
         private void listViewSelectedFiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             selectedFileIndex = e.ItemIndex;
@@ -202,11 +200,12 @@ namespace Cryptonator_WinForm
 
         private void buttonFileManagementEncrypt_Click(object sender, EventArgs e)
         {
-            Device.Instance.EncryptFiles(selectedFiles);
+            //uncomment when encryption and decryption are sure
+            //Device.Instance.EncryptFiles(selectedFiles);
+            labelSelectedFilePath.Text = "Uncomment Line first";
         }
-
+    
         #endregion
-
 
     }
 }

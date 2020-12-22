@@ -22,7 +22,6 @@ namespace Cryptonator_WinForm
         public string Name { get; set; }
         public string deviceID { get; set; }
         public List<string> Files { get; }
-        public string DevicesInfoPath;
         public bool serverStarted;
 
         public string EncryptedFilePath;
@@ -42,7 +41,6 @@ namespace Cryptonator_WinForm
             this.Name = string.Empty;
             this.deviceID = string.Empty; ;
             this.path = "C:\\Cryptonator\\";
-            this.DevicesInfoPath = this.path + "\\info.txt";
             this.EncryptedFilePath = this.path + "\\files.aes";
             this.MetaFilePath = this.path + "\\meta.aes";
             this.StateFilePath = this.path + "\\state.txt";
@@ -66,16 +64,48 @@ namespace Cryptonator_WinForm
 
         #endregion
 
-        #region key handling
+        #region Key Handling
 
         public void setEncryptionKey(byte[] newKey)
         {
             this.encryptionKey = newKey;
             //update in mongodb
         }
+
         #endregion
 
-        #region bluetooth
+        #region State Handling
+    
+        private string getStateFromStateFile()
+        {
+            using (FileStream fs = new FileStream(this.StateFilePath, FileMode.Open, FileAccess.Read))
+            using(StreamReader sr = new StreamReader(fs))
+            {
+                return sr.ReadLine();
+            }
+        }
+
+        private void setStateToStateFile(string newState)
+        {
+            using (FileStream fs = new FileStream(this.StateFilePath, FileMode.Append, FileAccess.Write))
+            using (StreamWriter sw = new StreamWriter(fs))
+            {
+                File.WriteAllText(this.EncryptedFilePath, string.Empty);
+                sw.WriteLine(newState);
+            }
+        }
+
+        private void setState(string newState)
+        {
+            this.state = newState;
+            this.setStateToStateFile(newState);
+            Thread.Sleep(1000);
+            this.sendData('S', newState);
+        }
+        #endregion
+
+        #region Bluetooth
+
         #region ConnectionInitialization
         public void startServer()
         {
@@ -90,7 +120,6 @@ namespace Cryptonator_WinForm
             this.Name = remoteMachineName;
             this.deviceID = id;
             this.path = "C:\\Cryptonator\\" + this.deviceID;
-            this.DevicesInfoPath = this.path + "\\info.txt";
             this.EncryptedFilePath = this.path + "\\files.aes";
             this.MetaFilePath = this.path + "\\meta.aes";
             this.StateFilePath = this.path + "\\state.txt";
@@ -99,21 +128,21 @@ namespace Cryptonator_WinForm
             if (!Directory.Exists(this.path))
             {
                 Directory.CreateDirectory(this.path);
-                File.Create(this.DevicesInfoPath);
                 File.Create(this.EncryptedFilePath);
                 File.Create(this.MetaFilePath);
                 File.Create(this.StateFilePath);
-
+                this.setState("D");
             }
-        }
-        #endregion
-        #region Testing
-        public void sendData(string send)
-        {
-            this.deviceBlue.sendData('T', send);
+            this.getStateFromStateFile()
         }
         #endregion
 
+        #region Send Data
+        public void sendData(char header, string send)
+        {
+            this.deviceBlue.sendData(header , send);
+        }
+        #endregion
 
         public void BluetoothDecryptAllFiles()
         {
@@ -121,97 +150,13 @@ namespace Cryptonator_WinForm
         }
 
         #endregion
-
-        #region FileHandling
-
-        #region write
-        public void AddFile(string file)
-        {
-
-
-            using (FileStream fs = new FileStream(this.DevicesInfoPath, FileMode.Append, FileAccess.Write))
-            using (StreamWriter sw = new StreamWriter(fs))
-            {
-                sw.Flush();
-                sw.WriteLine(file);
-            }
-        }
-
-        public void AddFiles(List<string> files)
-        {
-            foreach (string file in files)
-            {
-                this.AddFile(file);
-            }
-        }
-
-        public void RemoveFile(string paramFile)
-        {
-
-            using (FileStream fs = new FileStream(this.DevicesInfoPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (FileStream tempFile = new FileStream(this.path + "//temp.cryp", FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (StreamWriter sw = new StreamWriter(tempFile))
-            using (StreamReader sr = new StreamReader(fs))
-            {
-                string file;
-                while ((file = sr.ReadLine()) != null)
-                {
-                    sw.Flush();
-                    if (file != paramFile)
-                        sw.WriteLine(file);
-                }
-            }
-
-            File.Delete(this.DevicesInfoPath);
-            File.Move(this.path + "temp.cryp", this.DevicesInfoPath);
-        }
-
-        #endregion
-
-        #region read
-        public List<string> GetFileList()
-        {
-            List<string> files = new List<string>();
-
-            using (FileStream fs = new FileStream(this.DevicesInfoPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (StreamReader sr = new StreamReader(fs))
-            {
-                fs.Position = 0;
-                string file;
-                while ((file = sr.ReadLine()) != null)
-                {
-                    files.Add(file);
-                }
-            }
-
-            return files;
-        }
-        public bool FileListContains(string paramFile)
-        {
-
-            using (FileStream fs = new FileStream(this.DevicesInfoPath, FileMode.Open, FileAccess.ReadWrite))
-            using (StreamReader sr = new StreamReader(fs))
-            {
-                fs.Position = 0;
-                string file;
-                while ((file = sr.ReadLine()) != null)
-                {
-                    if (file == paramFile)
-                        return true;
-                }
-            }
-            return false;
-        }
-        #endregion
-
-        #endregion
-
+        
         #region Encryption & Decryption
         public void EncryptFiles(List<string> files)
         {
+            this.setState("L");
             TripleDESCryptoServiceProvider TripleDES = new TripleDESCryptoServiceProvider();
             TripleDES.GenerateKey();
-            MessageBox.Show("Key Length Should be " + TripleDES.Key.Length);
             TripleDES.Key = this.encryptionKey;
             TripleDES.Mode = CipherMode.CBC;
             TripleDES.Padding = PaddingMode.Zeros;
@@ -255,13 +200,13 @@ namespace Cryptonator_WinForm
             using (FileStream fs = new FileStream(this.MetaFilePath, FileMode.Open, FileAccess.Write))
             using(CryptoStream cs = new CryptoStream(fs, TripleDES.CreateDecryptor(), CryptoStreamMode.Write))
             {
-                string metadataString = string.Empty;
+                string completeMetadatastring = string.Empty;
                 foreach(FileMetaData fmd in metadatas)
                 {
-                    metadataString += fmd.GetMetaDataString()+ ":";
+                    var metadataString = fmd.GetMetaDataString();
+                    completeMetadatastring = (metadataString.Length * 8).ToString() +"?"+ metadataString;
                 }
-                metadataString = metadataString.Remove(metadataString.Length - 1, 1);
-                byte[] metadatabyte = Encoding.UTF8.GetBytes(metadataString);
+                byte[] metadatabyte = Encoding.UTF8.GetBytes(completeMetadatastring);
                 ushort length = Convert.ToUInt16(metadatabyte.Length);
                 byte[] lengthbyte = BitConverter.GetBytes(length);
                 cs.Write(lengthbyte, 0, 16);
@@ -269,6 +214,8 @@ namespace Cryptonator_WinForm
                 
             }
             #endregion
+
+            this.setState("E");
         }
         public void EncryptAllFiles(List<string> files)
         {
@@ -281,20 +228,21 @@ namespace Cryptonator_WinForm
             Thread decryptThread = new Thread(() => Decrypt(this.encryptionKey));
             decryptThread.Start();
         }
-        public void DecryptFilesWithKey(string key)
+        public void DecryptFilesWithKey(byte[] key)
         {
-            Thread decryptThread = new Thread(() => Decrypt(Encoding.UTF8.GetBytes(key)));
+            Thread decryptThread = new Thread(() => Decrypt(key));
             decryptThread.Start();
         }
         private void Decrypt(byte[] newEncryptionKey)
         {
+            this.setState("U");
             TripleDESCryptoServiceProvider TripleDES = new TripleDESCryptoServiceProvider();
             TripleDES.Key = newEncryptionKey;
             TripleDES.Mode = CipherMode.CBC;
             TripleDES.Padding = PaddingMode.Zeros;
             int bufferSize = 1048576;
-            string fileMetaDatasString = String.Empty;
-            
+            List<FileMetaData> metadatas = new List<FileMetaData>();
+
             #region metadata
 
             using (FileStream fs = new FileStream(this.MetaFilePath, FileMode.Open, FileAccess.Read))
@@ -303,28 +251,25 @@ namespace Cryptonator_WinForm
 
                 byte[] lengthByte = new byte[16];
                 cs.Read(lengthByte, 0, lengthByte.Length);
-                ushort length = BitConverter.ToUInt16(lengthByte, 0);
-                int lengthInt = Convert.ToInt32(length);
+                ushort ulength = BitConverter.ToUInt16(lengthByte, 0);
+                int length = Convert.ToInt32(ulength);
+                int lengthRead = 0;
+                while(lengthRead < length)
+                {
+                    cs.Read(lengthByte, 0, lengthByte.Length);
+                    ulength = BitConverter.ToUInt16(lengthByte, 0);
+                    length = Convert.ToInt32(ulength);
+                    lengthRead += length + lengthByte.Length;
+                    var fmdByte = new byte[length];
+                    cs.Read(fmdByte, 0, fmdByte.Length);
+                    var fmdstring = Encoding.UTF8.GetString(fmdByte);
+                    var fmd = new FileMetaData(fmdstring);
+                    metadatas.Add(fmd);
 
-                byte[] fileMetaDataByte = new byte[lengthInt];
-                cs.Read(fileMetaDataByte, 0, fileMetaDataByte.Length);
-                fileMetaDatasString = Encoding.UTF8.GetString(fileMetaDataByte);
+                }
+                
             }
-
-            #region DataInfoConversion
-            List<FileMetaData> metadatas = new List<FileMetaData>();
-            string[] fileMetaDatasStringList = fileMetaDatasString.Split(':');
-            foreach (string fileMetaDataString in fileMetaDatasStringList)
-            {
-                FileMetaData tempFMD = new FileMetaData(fileMetaDataString);
-                metadatas.Add(tempFMD);
-            }
-
-
-            #endregion
-
-
-
+        
             #endregion
 
             #region files
@@ -361,11 +306,11 @@ namespace Cryptonator_WinForm
             #region .aes file management
             File.WriteAllText(this.EncryptedFilePath, string.Empty);
             #endregion
+            this.setState("D");
 
         }
 
         #endregion
-        
 
     }
 }

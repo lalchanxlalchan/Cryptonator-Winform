@@ -75,7 +75,7 @@ namespace Cryptonator_WinForm
 
         private void buttonDeviceTest_Click(object sender, EventArgs e)
         {
-            Device.Instance.sendData(textBoxDeviceTest.Text);
+            Device.Instance.sendData('T',textBoxDeviceTest.Text);
         }
     }
 }

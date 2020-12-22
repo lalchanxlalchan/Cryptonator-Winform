@@ -128,11 +128,12 @@ namespace Cryptonator_WinForm
                     case "K":
                         //key
                         Device.Instance.setEncryptionKey(body);
+                        //encrypt files here.
                         DeviceForm.Instance.updateLabelDeviceIOStatus("Length: " + Encoding.UTF8.GetString(body).Length.ToString());
                         break;
                     case "D":
                         //decrypt
-                        Device.Instance.BluetoothDecryptAllFiles();
+                        Device.Instance.DecryptFilesWithKey(body);
                         break;
 
                 }
